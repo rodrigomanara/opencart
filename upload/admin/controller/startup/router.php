@@ -1,5 +1,13 @@
 <?php
-class ControllerStartupRouter extends Controller {
+
+namespace Admin\Controller\Startup;
+
+use System\Engine\AdminController as Controller;
+use System\Engine\Action;
+use System\Library\Request;
+
+
+class Router extends Controller {
 	public function index() {
 		// Route
 		if (isset($this->request->get['route']) && $this->request->get['route'] != 'startup/router') {
@@ -20,7 +28,7 @@ class ControllerStartupRouter extends Controller {
 			return $result;
 		}
 		
-		$action = new Action($route);
+		$action = new Action($route , new Request());
 		
 		// Any output needs to be another Action object. 
 		$output = $action->execute($this->registry, $data);

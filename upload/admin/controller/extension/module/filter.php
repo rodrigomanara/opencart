@@ -1,5 +1,11 @@
 <?php
-class ControllerExtensionModulefilter extends Controller {
+
+namespace Admin\Controller\Extension\Module;
+
+use System\Engine\AdminController as Controller;
+
+
+class filter extends Controller {
 	private $error = array();
 
 	public function index() {

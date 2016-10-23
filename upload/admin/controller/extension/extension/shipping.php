@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionExtensionShipping extends Controller {
+
+namespace Admin\Controller\Extension\Extesion;
+
+use System\Engine\AdminController as Controller;
+
+class Shipping extends Controller {
 	private $error = array();
 
 	public function index() {

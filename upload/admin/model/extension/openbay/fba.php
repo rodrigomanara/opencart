@@ -1,10 +1,16 @@
 <?php
-class ModelExtensionOpenBayFba extends Model {
+
+namespace Admin\Model\Extension\OpenBay;
+
+use System\Engine\Model;
+
+class Fba extends Model {
+
     public function install() {
         $this->load->model('extension/event');
 
-		$this->model_extension_event->addEvent('openbay_fba_add_order', 'catalog/model/checkout/order/addOrder/after', 'extension/openbay/fba/eventAddOrder');
-		$this->model_extension_event->addEvent('openbay_fba_add_orderhistory', 'catalog/model/checkout/order/addOrderHistory/after', 'extension/openbay/fba/eventAddOrderHistory');
+        $this->model_extension_event->addEvent('openbay_fba_add_order', 'catalog/model/checkout/order/addOrder/after', 'extension/openbay/fba/eventAddOrder');
+        $this->model_extension_event->addEvent('openbay_fba_add_orderhistory', 'catalog/model/checkout/order/addOrderHistory/after', 'extension/openbay/fba/eventAddOrderHistory');
 
         $this->db->query("
 				CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "fba_order` (
@@ -40,7 +46,7 @@ class ModelExtensionOpenBayFba extends Model {
         $setting["openbay_fba_shipping_speed"] = 'Standard';
         $setting["openbay_fba_order_prefix"] = 'OC-';
 
-		$this->model_setting_setting->editSetting('openbay_fba', $setting);
+        $this->model_setting_setting->editSetting('openbay_fba', $setting);
     }
 
     public function uninstall() {
@@ -53,13 +59,14 @@ class ModelExtensionOpenBayFba extends Model {
 
     public function patch() {
         if ($this->config->get('openbay_fba_status') == 1) {
-
+            
         }
     }
 
     public function countFbaOrders() {
         $query = $this->db->query("SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "fba_order`");
 
-        return (int)$query->row['total'];
+        return (int) $query->row['total'];
     }
+
 }

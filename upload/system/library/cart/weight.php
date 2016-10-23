@@ -1,5 +1,7 @@
 <?php
-namespace Cart;
+
+namespace System\Library\Cart;
+
 class Weight {
 	private $weights = array();
 

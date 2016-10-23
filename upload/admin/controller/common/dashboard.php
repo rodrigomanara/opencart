@@ -1,92 +1,99 @@
 <?php
-class ControllerCommonDashboard extends Controller {
-	public function index() {
-		$this->load->language('common/dashboard');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+namespace Admin\Controller\Common;
 
-		$data['heading_title'] = $this->language->get('heading_title');
+use System\Engine\AdminController as Controller;
 
-		$data['breadcrumbs'] = array();
+class Dashboard extends Controller {
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
-		);
+    public function index() {
+        $this->load->language('common/dashboard');
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
-		);
+        $this->document->setTitle($this->language->get('heading_title'));
 
-		// Check install directory exists
-		if (is_dir(dirname(DIR_APPLICATION) . '/install')) {
-			$data['error_install'] = $this->language->get('error_install');
-		} else {
-			$data['error_install'] = '';
-		}
+        $data['heading_title'] = $this->language->get('heading_title');
 
-		// Dashboard Extensions
-		$dashboards = array();
+        $data['breadcrumbs'] = array();
 
-		$this->load->model('extension/extension');
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_home'),
+            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+        );
 
-		// Get a list of installed modules
-		$extensions = $this->model_extension_extension->getInstalled('dashboard');
-		
-		// Add all the modules which have multiple settings for each module
-		foreach ($extensions as $code) {
-			if ($this->config->get('dashboard_' . $code . '_status') && $this->user->hasPermission('access', 'extension/dashboard/' . $code)) {
-				$output = $this->load->controller('extension/dashboard/' . $code . '/dashboard');
-				
-				if ($output) {
-					$dashboards[] = array(
-						'code'       => $code,
-						'width'      => $this->config->get('dashboard_' . $code . '_width'),
-						'sort_order' => $this->config->get('dashboard_' . $code . '_sort_order'),
-						'output'     => $output
-					);
-				}
-			}
-		}
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('heading_title'),
+            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+        );
 
-		$sort_order = array();
+        // Check install directory exists
+        if (is_dir(dirname(DIR_APPLICATION) . '/install')) {
+            $data['error_install'] = $this->language->get('error_install');
+        } else {
+            $data['error_install'] = '';
+        }
 
-		foreach ($dashboards as $key => $value) {
-			$sort_order[$key] = $value['sort_order'];
-		}
+        // Dashboard Extensions
+        $dashboards = array();
 
-		array_multisort($sort_order, SORT_ASC, $dashboards);
-		
-		// Split the array so the columns width is not more than 12 on each row.
-		$width = 0;
-		$column = array();
-		$data['rows'] = array();
-		
-		foreach ($dashboards as $dashboard) {
-			$column[] = $dashboard;
-			
-			$width = ($width + $dashboard['width']);
-			
-			if ($width >= 12) {
-				$data['rows'][] = $column;
-				
-				$width = 0;
-				$column = array();
-			}
-		}
+        $this->load->model('extension/extension');
 
-		$data['header'] = $this->load->controller('common/header');
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['footer'] = $this->load->controller('common/footer');
+        // Get a list of installed modules
+        $extensions = $this->model_extension_extension->getInstalled('dashboard');
 
-		// Run currency update
-		if ($this->config->get('config_currency_auto')) {
-			$this->load->model('localisation/currency');
+        // Add all the modules which have multiple settings for each module
+        foreach ($extensions as $code) {
+            if ($this->config->get('dashboard_' . $code . '_status') && $this->user->hasPermission('access', 'extension/dashboard/' . $code)) {
+                $output = $this->load->controller('extension/dashboard/' . $code . '/dashboard');
 
-			$this->model_localisation_currency->refresh();
-		}
+                if ($output) {
+                    $dashboards[] = array(
+                        'code' => $code,
+                        'width' => $this->config->get('dashboard_' . $code . '_width'),
+                        'sort_order' => $this->config->get('dashboard_' . $code . '_sort_order'),
+                        'output' => $output
+                    );
+                }
+            }
+        }
 
-		$this->response->setOutput($this->load->view('common/dashboard', $data));
-	}
+        $sort_order = array();
+
+        foreach ($dashboards as $key => $value) {
+            $sort_order[$key] = $value['sort_order'];
+        }
+
+        array_multisort($sort_order, SORT_ASC, $dashboards);
+
+        // Split the array so the columns width is not more than 12 on each row.
+        $width = 0;
+        $column = array();
+        $data['rows'] = array();
+
+        foreach ($dashboards as $dashboard) {
+            $column[] = $dashboard;
+
+            $width = ($width + $dashboard['width']);
+
+            if ($width >= 12) {
+                $data['rows'][] = $column;
+
+                $width = 0;
+                $column = array();
+            }
+        }
+
+        $data['header'] = $this->load->controller('common/header');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
+
+        // Run currency update
+        if ($this->config->get('config_currency_auto')) {
+            $this->load->model('localisation/currency');
+
+            $this->model_localisation_currency->refresh();
+        }
+
+        $this->response->setOutput($this->load->view('common/dashboard', $data));
+    }
+
 }

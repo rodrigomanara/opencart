@@ -1,5 +1,10 @@
 <?php
-class ModelCatalogAttribute extends Model {
+
+namespace Admin\Model\Catalog;
+
+use System\Engine\Model;
+
+class Attribute extends Model {
 	public function addAttribute($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "attribute SET attribute_group_id = '" . (int)$data['attribute_group_id'] . "', sort_order = '" . (int)$data['sort_order'] . "'");
 

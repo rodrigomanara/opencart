@@ -1,16 +1,12 @@
 <?php
-abstract class Controller {
-	protected $registry;
 
-	public function __construct($registry) {
-		$this->registry = $registry;
-	}
+namespace System\Engine;
 
-	public function __get($key) {
-		return $this->registry->get($key);
-	}
+use Symtem\Engine\AbstractController;
 
-	public function __set($key, $value) {
-		$this->registry->set($key, $value);
-	}
+/**
+ * Controller
+ */
+abstract class Controller extends AbstractController {
+    
 }

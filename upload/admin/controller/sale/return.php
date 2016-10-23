@@ -20,7 +20,7 @@ class ControllerSaleReturn extends Controller {
 		$this->load->model('sale/return');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_sale_return->addReturn($this->request->post);
+			$this->model_sale_salereturn->addReturn($this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -84,7 +84,7 @@ class ControllerSaleReturn extends Controller {
 		$this->load->model('sale/return');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_sale_return->editReturn($this->request->get['return_id'], $this->request->post);
+			$this->model_sale_salereturn->editReturn($this->request->get['return_id'], $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -149,7 +149,7 @@ class ControllerSaleReturn extends Controller {
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			foreach ($this->request->post['selected'] as $return_id) {
-				$this->model_sale_return->deleteReturn($return_id);
+				$this->model_sale_salereturn->deleteReturn($return_id);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -351,9 +351,9 @@ class ControllerSaleReturn extends Controller {
 			'limit'                   => $this->config->get('config_limit_admin')
 		);
 
-		$return_total = $this->model_sale_return->getTotalReturns($filter_data);
+		$return_total = $this->model_sale_salereturn->getTotalReturns($filter_data);
 
-		$results = $this->model_sale_return->getReturns($filter_data);
+		$results = $this->model_sale_salereturn->getReturns($filter_data);
 
 		foreach ($results as $result) {
 			$data['returns'][] = array(
@@ -715,7 +715,7 @@ class ControllerSaleReturn extends Controller {
 		$data['cancel'] = $this->url->link('sale/return', 'token=' . $this->session->data['token'] . $url, true);
 
 		if (isset($this->request->get['return_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$return_info = $this->model_sale_return->getReturn($this->request->get['return_id']);
+			$return_info = $this->model_sale_salereturn->getReturn($this->request->get['return_id']);
 		}
 
 		if (isset($this->request->post['order_id'])) {
@@ -939,7 +939,7 @@ class ControllerSaleReturn extends Controller {
 			}
 
 			if (!$data['error']) {
-				$this->model_sale_return->addReturnHistory($this->request->get['return_id'], $this->request->post);
+				$this->model_sale_salereturn->addReturnHistory($this->request->get['return_id'], $this->request->post);
 
 				$data['success'] = $this->language->get('text_success');
 			}
@@ -960,7 +960,7 @@ class ControllerSaleReturn extends Controller {
 
 		$data['histories'] = array();
 
-		$results = $this->model_sale_return->getReturnHistories($this->request->get['return_id'], ($page - 1) * 10, 10);
+		$results = $this->model_sale_salereturn->getReturnHistories($this->request->get['return_id'], ($page - 1) * 10, 10);
 
 		foreach ($results as $result) {
 			$data['histories'][] = array(
@@ -971,7 +971,7 @@ class ControllerSaleReturn extends Controller {
 			);
 		}
 
-		$history_total = $this->model_sale_return->getTotalReturnHistories($this->request->get['return_id']);
+		$history_total = $this->model_sale_salereturn->getTotalReturnHistories($this->request->get['return_id']);
 
 		$pagination = new Pagination();
 		$pagination->total = $history_total;

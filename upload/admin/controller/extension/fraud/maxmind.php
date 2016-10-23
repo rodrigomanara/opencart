@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionFraudMaxMind extends Controller {
+
+namespace Admin\Controller\Extension\Fraud;
+
+use System\Engine\AdminController as Controller;
+
+class MaxMind extends Controller {
 	private $error = array();
 
 	public function index() {

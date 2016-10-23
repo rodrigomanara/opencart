@@ -1,92 +1,99 @@
 <?php
-class ModelLocalisationZone extends Model {
-	public function addZone($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "zone SET status = '" . (int)$data['status'] . "', name = '" . $this->db->escape($data['name']) . "', code = '" . $this->db->escape($data['code']) . "', country_id = '" . (int)$data['country_id'] . "'");
 
-		$this->cache->delete('zone');
-		
-		return $this->db->getLastId();
-	}
+namespace Admin\Model\Localisation;
 
-	public function editZone($zone_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "zone SET status = '" . (int)$data['status'] . "', name = '" . $this->db->escape($data['name']) . "', code = '" . $this->db->escape($data['code']) . "', country_id = '" . (int)$data['country_id'] . "' WHERE zone_id = '" . (int)$zone_id . "'");
+use System\Engine\Model;
 
-		$this->cache->delete('zone');
-	}
+class Zone extends Model {
 
-	public function deleteZone($zone_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "zone WHERE zone_id = '" . (int)$zone_id . "'");
+    public function addZone($data) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "zone SET status = '" . (int) $data['status'] . "', name = '" . $this->db->escape($data['name']) . "', code = '" . $this->db->escape($data['code']) . "', country_id = '" . (int) $data['country_id'] . "'");
 
-		$this->cache->delete('zone');
-	}
+        $this->cache->delete('zone');
 
-	public function getZone($zone_id) {
-		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "zone WHERE zone_id = '" . (int)$zone_id . "'");
+        return $this->db->getLastId();
+    }
 
-		return $query->row;
-	}
+    public function editZone($zone_id, $data) {
+        $this->db->query("UPDATE " . DB_PREFIX . "zone SET status = '" . (int) $data['status'] . "', name = '" . $this->db->escape($data['name']) . "', code = '" . $this->db->escape($data['code']) . "', country_id = '" . (int) $data['country_id'] . "' WHERE zone_id = '" . (int) $zone_id . "'");
 
-	public function getZones($data = array()) {
-		$sql = "SELECT *, z.name, c.name AS country FROM " . DB_PREFIX . "zone z LEFT JOIN " . DB_PREFIX . "country c ON (z.country_id = c.country_id)";
+        $this->cache->delete('zone');
+    }
 
-		$sort_data = array(
-			'c.name',
-			'z.name',
-			'z.code'
-		);
+    public function deleteZone($zone_id) {
+        $this->db->query("DELETE FROM " . DB_PREFIX . "zone WHERE zone_id = '" . (int) $zone_id . "'");
 
-		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];
-		} else {
-			$sql .= " ORDER BY c.name";
-		}
+        $this->cache->delete('zone');
+    }
 
-		if (isset($data['order']) && ($data['order'] == 'DESC')) {
-			$sql .= " DESC";
-		} else {
-			$sql .= " ASC";
-		}
+    public function getZone($zone_id) {
+        $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "zone WHERE zone_id = '" . (int) $zone_id . "'");
 
-		if (isset($data['start']) || isset($data['limit'])) {
-			if ($data['start'] < 0) {
-				$data['start'] = 0;
-			}
+        return $query->row;
+    }
 
-			if ($data['limit'] < 1) {
-				$data['limit'] = 20;
-			}
+    public function getZones($data = array()) {
+        $sql = "SELECT *, z.name, c.name AS country FROM " . DB_PREFIX . "zone z LEFT JOIN " . DB_PREFIX . "country c ON (z.country_id = c.country_id)";
 
-			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-		}
+        $sort_data = array(
+            'c.name',
+            'z.name',
+            'z.code'
+        );
 
-		$query = $this->db->query($sql);
+        if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+            $sql .= " ORDER BY " . $data['sort'];
+        } else {
+            $sql .= " ORDER BY c.name";
+        }
 
-		return $query->rows;
-	}
+        if (isset($data['order']) && ($data['order'] == 'DESC')) {
+            $sql .= " DESC";
+        } else {
+            $sql .= " ASC";
+        }
 
-	public function getZonesByCountryId($country_id) {
-		$zone_data = $this->cache->get('zone.' . (int)$country_id);
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
 
-		if (!$zone_data) {
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone WHERE country_id = '" . (int)$country_id . "' AND status = '1' ORDER BY name");
+            if ($data['limit'] < 1) {
+                $data['limit'] = 20;
+            }
 
-			$zone_data = $query->rows;
+            $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
+        }
 
-			$this->cache->set('zone.' . (int)$country_id, $zone_data);
-		}
+        $query = $this->db->query($sql);
 
-		return $zone_data;
-	}
+        return $query->rows;
+    }
 
-	public function getTotalZones() {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone");
+    public function getZonesByCountryId($country_id) {
+        $zone_data = $this->cache->get('zone.' . (int) $country_id);
 
-		return $query->row['total'];
-	}
+        if (!$zone_data) {
+            $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone WHERE country_id = '" . (int) $country_id . "' AND status = '1' ORDER BY name");
 
-	public function getTotalZonesByCountryId($country_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone WHERE country_id = '" . (int)$country_id . "'");
+            $zone_data = $query->rows;
 
-		return $query->row['total'];
-	}
+            $this->cache->set('zone.' . (int) $country_id, $zone_data);
+        }
+
+        return $zone_data;
+    }
+
+    public function getTotalZones() {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone");
+
+        return $query->row['total'];
+    }
+
+    public function getTotalZonesByCountryId($country_id) {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone WHERE country_id = '" . (int) $country_id . "'");
+
+        return $query->row['total'];
+    }
+
 }

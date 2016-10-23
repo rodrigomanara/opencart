@@ -1,118 +1,125 @@
 <?php
-class ModelMarketingMarketing extends Model {
-	public function addMarketing($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "marketing SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', code = '" . $this->db->escape($data['code']) . "', date_added = NOW()");
 
-		return $this->db->getLastId();
-	}
+namespace Admin\Model\Marketing;
 
-	public function editMarketing($marketing_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "marketing SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', code = '" . $this->db->escape($data['code']) . "' WHERE marketing_id = '" . (int)$marketing_id . "'");
-	}
+use System\Engine\Model;
 
-	public function deleteMarketing($marketing_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "marketing WHERE marketing_id = '" . (int)$marketing_id . "'");
-	}
+class Marketing extends Model {
 
-	public function getMarketing($marketing_id) {
-		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "marketing WHERE marketing_id = '" . (int)$marketing_id . "'");
+    public function addMarketing($data) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "marketing SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', code = '" . $this->db->escape($data['code']) . "', date_added = NOW()");
 
-		return $query->row;
-	}
+        return $this->db->getLastId();
+    }
 
-	public function getMarketingByCode($code) {
-		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "marketing WHERE code = '" . $this->db->escape($code) . "'");
+    public function editMarketing($marketing_id, $data) {
+        $this->db->query("UPDATE " . DB_PREFIX . "marketing SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', code = '" . $this->db->escape($data['code']) . "' WHERE marketing_id = '" . (int) $marketing_id . "'");
+    }
 
-		return $query->row;
-	}
+    public function deleteMarketing($marketing_id) {
+        $this->db->query("DELETE FROM " . DB_PREFIX . "marketing WHERE marketing_id = '" . (int) $marketing_id . "'");
+    }
 
-	public function getMarketings($data = array()) {
-		$implode = array();
+    public function getMarketing($marketing_id) {
+        $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "marketing WHERE marketing_id = '" . (int) $marketing_id . "'");
 
-		$order_statuses = $this->config->get('config_complete_status');
+        return $query->row;
+    }
 
-		foreach ($order_statuses as $order_status_id) {
-			$implode[] = "o.order_status_id = '" . (int)$order_status_id . "'";
-		}
+    public function getMarketingByCode($code) {
+        $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "marketing WHERE code = '" . $this->db->escape($code) . "'");
 
-		$sql = "SELECT *, (SELECT COUNT(*) FROM `" . DB_PREFIX . "order` o WHERE (" . implode(" OR ", $implode) . ") AND o.marketing_id = m.marketing_id) AS orders FROM " . DB_PREFIX . "marketing m";
+        return $query->row;
+    }
 
-		$implode = array();
+    public function getMarketings($data = array()) {
+        $implode = array();
 
-		if (!empty($data['filter_name'])) {
-			$implode[] = "m.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
-		}
+        $order_statuses = $this->config->get('config_complete_status');
 
-		if (!empty($data['filter_code'])) {
-			$implode[] = "m.code = '" . $this->db->escape($data['filter_code']) . "'";
-		}
+        foreach ($order_statuses as $order_status_id) {
+            $implode[] = "o.order_status_id = '" . (int) $order_status_id . "'";
+        }
 
-		if (!empty($data['filter_date_added'])) {
-			$implode[] = "DATE(m.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
-		}
+        $sql = "SELECT *, (SELECT COUNT(*) FROM `" . DB_PREFIX . "order` o WHERE (" . implode(" OR ", $implode) . ") AND o.marketing_id = m.marketing_id) AS orders FROM " . DB_PREFIX . "marketing m";
 
-		if ($implode) {
-			$sql .= " WHERE " . implode(" AND ", $implode);
-		}
+        $implode = array();
 
-		$sort_data = array(
-			'm.name',
-			'm.code',
-			'm.date_added'
-		);
+        if (!empty($data['filter_name'])) {
+            $implode[] = "m.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+        }
 
-		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];
-		} else {
-			$sql .= " ORDER BY m.name";
-		}
+        if (!empty($data['filter_code'])) {
+            $implode[] = "m.code = '" . $this->db->escape($data['filter_code']) . "'";
+        }
 
-		if (isset($data['order']) && ($data['order'] == 'DESC')) {
-			$sql .= " DESC";
-		} else {
-			$sql .= " ASC";
-		}
+        if (!empty($data['filter_date_added'])) {
+            $implode[] = "DATE(m.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+        }
 
-		if (isset($data['start']) || isset($data['limit'])) {
-			if ($data['start'] < 0) {
-				$data['start'] = 0;
-			}
+        if ($implode) {
+            $sql .= " WHERE " . implode(" AND ", $implode);
+        }
 
-			if ($data['limit'] < 1) {
-				$data['limit'] = 20;
-			}
+        $sort_data = array(
+            'm.name',
+            'm.code',
+            'm.date_added'
+        );
 
-			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-		}
+        if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+            $sql .= " ORDER BY " . $data['sort'];
+        } else {
+            $sql .= " ORDER BY m.name";
+        }
 
-		$query = $this->db->query($sql);
+        if (isset($data['order']) && ($data['order'] == 'DESC')) {
+            $sql .= " DESC";
+        } else {
+            $sql .= " ASC";
+        }
 
-		return $query->rows;
-	}
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
 
-	public function getTotalMarketings($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "marketing";
+            if ($data['limit'] < 1) {
+                $data['limit'] = 20;
+            }
 
-		$implode = array();
+            $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
+        }
 
-		if (!empty($data['filter_name'])) {
-			$implode[] = "name LIKE '" . $this->db->escape($data['filter_name']) . "'";
-		}
+        $query = $this->db->query($sql);
 
-		if (!empty($data['filter_code'])) {
-			$implode[] = "code = '" . $this->db->escape($data['filter_code']) . "'";
-		}
+        return $query->rows;
+    }
 
-		if (!empty($data['filter_date_added'])) {
-			$implode[] = "DATE(date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
-		}
+    public function getTotalMarketings($data = array()) {
+        $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "marketing";
 
-		if ($implode) {
-			$sql .= " WHERE " . implode(" AND ", $implode);
-		}
+        $implode = array();
 
-		$query = $this->db->query($sql);
+        if (!empty($data['filter_name'])) {
+            $implode[] = "name LIKE '" . $this->db->escape($data['filter_name']) . "'";
+        }
 
-		return $query->row['total'];
-	}
+        if (!empty($data['filter_code'])) {
+            $implode[] = "code = '" . $this->db->escape($data['filter_code']) . "'";
+        }
+
+        if (!empty($data['filter_date_added'])) {
+            $implode[] = "DATE(date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+        }
+
+        if ($implode) {
+            $sql .= " WHERE " . implode(" AND ", $implode);
+        }
+
+        $query = $this->db->query($sql);
+
+        return $query->row['total'];
+    }
+
 }

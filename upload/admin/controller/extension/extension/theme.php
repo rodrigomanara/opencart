@@ -1,5 +1,9 @@
 <?php
-class ControllerExtensionExtensionTheme extends Controller {
+namespace Admin\Controller\Extension\Extesion;
+
+use System\Engine\AdminController as Controller;
+
+class Theme extends Controller {
 	private $error = array();
 
 	public function index() {

@@ -1,5 +1,11 @@
 <?php
-class ModelToolBackup extends Model {
+
+namespace Admin\Model\Tool;
+
+use System\Engine\Model;
+
+
+class Backup extends Model {
 	public function restore($sql) {
 		foreach (explode(";\n", $sql) as $sql) {
 			$sql = trim($sql);

@@ -1,5 +1,11 @@
 <?php
-class ModelExtensionPaymentAmazonLoginPay extends Model {
+
+
+namespace Admin\Model\Extension\Payment;
+
+use System\Engine\Model;
+
+class AmazonLoginPay extends Model {
 
 	public function install() {
 		$this->db->query("

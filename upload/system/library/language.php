@@ -1,31 +1,59 @@
 <?php
+
+namespace System\Library;
+
 class Language {
 	private $default = 'en-gb';
 	private $directory;
 	private $data = array();
-
+        
+        /**
+         * 
+         * @param type $directory
+         */
 	public function __construct($directory = '') {
 		$this->directory = $directory;
 	}
-
+        /**
+         * 
+         * @param type $key
+         * @return type
+         */
 	public function get($key) {
 		return (isset($this->data[$key]) ? $this->data[$key] : $key);
 	}
-	
+	/**
+         * 
+         * @param type $key
+         * @param type $value
+         */
 	public function set($key, $value) {
 		$this->data[$key] = $value;
 	}
 	
-	// Please dont use the below function i'm thinking getting rid of it.
-	public function all() {
+	/**
+         * 
+         * @return type
+         * @deprecated new version 3.0 <p>Please dont use the below function i'm thinking getting rid of it.</p>
+         */
+        public function all() {
 		return $this->data;
 	}
 	
-	// Please dont use the below function i'm thinking getting rid of it.
-	public function merge(&$data) {
+	// 
+	/**
+         * @param type $data
+         * @deprecated new version 3.0 <p>Please dont use the below function i'm thinking getting rid of it.</p>
+         */
+        public function merge(&$data) {
 		array_merge($this->data, $data);
 	}
-			
+	/**
+         * 
+         * @param type $filename
+         * @param type $data
+         * @return type
+         */		
 	public function load($filename, &$data = array()) {
 		$_ = array();
 

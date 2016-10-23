@@ -82,9 +82,9 @@ class ControllerReportSaleReturn extends Controller {
 			'limit'                   => $this->config->get('config_limit_admin')
 		);
 
-		$return_total = $this->model_report_return->getTotalReturns($filter_data);
+		$return_total = $this->model_report_reportreturn->getTotalReturns($filter_data);
 
-		$results = $this->model_report_return->getReturns($filter_data);
+		$results = $this->model_report_reportreturn->getReturns($filter_data);
 
 		foreach ($results as $result) {
 			$data['returns'][] = array(

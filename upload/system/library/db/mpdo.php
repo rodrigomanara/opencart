@@ -1,5 +1,7 @@
 <?php
-namespace DB;
+
+namespace System\Library\DB;
+
 final class mPDO {
 	private $connection = null;
 	private $statement = null;

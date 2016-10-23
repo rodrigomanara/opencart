@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionModuleSpecial extends Controller {
+
+namespace Admin\Controller\Extension\Module;
+
+use System\Engine\AdminController as Controller;
+
+class Special extends Controller {
 	private $error = array();
 
 	public function index() {

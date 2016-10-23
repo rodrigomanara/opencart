@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionFraudIp extends Controller {
+
+namespace Admin\Controller\Extension\Fraud;
+
+use System\Engine\AdminController as Controller;
+
+class Ip extends Controller {
 	private $error = array();
 
 	public function index() {

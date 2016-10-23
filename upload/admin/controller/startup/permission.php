@@ -1,5 +1,12 @@
 <?php
-class ControllerStartupPermission extends Controller {
+
+namespace Admin\Controller\Startup;
+
+use System\Engine\AdminController as Controller;
+
+
+
+class Permission extends Controller {
 	public function index() {
 		if (isset($this->request->get['route'])) {
 			$route = '';

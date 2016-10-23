@@ -1,30 +1,37 @@
 <?php
-class ControllerErrorPermission extends Controller {
-	public function index() {
-		$this->load->language('error/permission');
 
-		$this->document->setTitle($this->language->get('heading_title'));
+namespace Admin\Controller\Error;
 
-		$data['heading_title'] = $this->language->get('heading_title');
+use System\Engine\AdminController as Controller;
 
-		$data['text_permission'] = $this->language->get('text_permission');
+class Permission extends Controller {
 
-		$data['breadcrumbs'] = array();
+    public function index() {
+        $this->load->language('error/permission');
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
-		);
+        $this->document->setTitle($this->language->get('heading_title'));
 
-		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link($this->request->get['route'], 'token=' . $this->session->data['token'], true)
-		);
+        $data['heading_title'] = $this->language->get('heading_title');
 
-		$data['header'] = $this->load->controller('common/header');
-		$data['column_left'] = $this->load->controller('common/column_left');
-		$data['footer'] = $this->load->controller('common/footer');
+        $data['text_permission'] = $this->language->get('text_permission');
 
-		$this->response->setOutput($this->load->view('error/permission', $data));
-	}
+        $data['breadcrumbs'] = array();
+
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_home'),
+            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+        );
+
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('heading_title'),
+            'href' => $this->url->link($this->request->get['route'], 'token=' . $this->session->data['token'], true)
+        );
+
+        $data['header'] = $this->load->controller('common/header');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
+
+        $this->response->setOutput($this->load->view('error/permission', $data));
+    }
+
 }

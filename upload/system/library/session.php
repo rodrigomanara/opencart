@@ -1,4 +1,6 @@
 <?php
+namespace System\Library;
+
 class Session {
 	public $session_id = '';
 	public $data = array();

@@ -1,130 +1,137 @@
 <?php
-class ModelLocalisationGeoZone extends Model {
-	public function addGeoZone($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "geo_zone SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', date_added = NOW()");
 
-		$geo_zone_id = $this->db->getLastId();
+namespace Admin\Model\Localisation;
 
-		if (isset($data['zone_to_geo_zone'])) {
-			foreach ($data['zone_to_geo_zone'] as $value) {
-				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "'");				
+use System\Engine\Model;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
-			}
-		}
+class GeoZone extends Model {
 
-		$this->cache->delete('geo_zone');
-		
-		return $geo_zone_id;
-	}
+    public function addGeoZone($data) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "geo_zone SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', date_added = NOW()");
 
-	public function editGeoZone($geo_zone_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "geo_zone SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', date_modified = NOW() WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+        $geo_zone_id = $this->db->getLastId();
 
-		$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+        if (isset($data['zone_to_geo_zone'])) {
+            foreach ($data['zone_to_geo_zone'] as $value) {
+                $this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND country_id = '" . (int) $value['country_id'] . "' AND zone_id = '" . (int) $value['zone_id'] . "'");
 
-		if (isset($data['zone_to_geo_zone'])) {
-			foreach ($data['zone_to_geo_zone'] as $value) {
-				$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "' AND country_id = '" . (int)$value['country_id'] . "' AND zone_id = '" . (int)$value['zone_id'] . "'");				
+                $this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int) $value['country_id'] . "', zone_id = '" . (int) $value['zone_id'] . "', geo_zone_id = '" . (int) $geo_zone_id . "', date_added = NOW()");
+            }
+        }
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int)$value['country_id'] . "', zone_id = '" . (int)$value['zone_id'] . "', geo_zone_id = '" . (int)$geo_zone_id . "', date_added = NOW()");
-			}
-		}
+        $this->cache->delete('geo_zone');
 
-		$this->cache->delete('geo_zone');
-	}
+        return $geo_zone_id;
+    }
 
-	public function deleteGeoZone($geo_zone_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
-		$this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+    public function editGeoZone($geo_zone_id, $data) {
+        $this->db->query("UPDATE " . DB_PREFIX . "geo_zone SET name = '" . $this->db->escape($data['name']) . "', description = '" . $this->db->escape($data['description']) . "', date_modified = NOW() WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
 
-		$this->cache->delete('geo_zone');
-	}
+        $this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
 
-	public function getGeoZone($geo_zone_id) {
-		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+        if (isset($data['zone_to_geo_zone'])) {
+            foreach ($data['zone_to_geo_zone'] as $value) {
+                $this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND country_id = '" . (int) $value['country_id'] . "' AND zone_id = '" . (int) $value['zone_id'] . "'");
 
-		return $query->row;
-	}
+                $this->db->query("INSERT INTO " . DB_PREFIX . "zone_to_geo_zone SET country_id = '" . (int) $value['country_id'] . "', zone_id = '" . (int) $value['zone_id'] . "', geo_zone_id = '" . (int) $geo_zone_id . "', date_added = NOW()");
+            }
+        }
 
-	public function getGeoZones($data = array()) {
-		if ($data) {
-			$sql = "SELECT * FROM " . DB_PREFIX . "geo_zone";
+        $this->cache->delete('geo_zone');
+    }
 
-			$sort_data = array(
-				'name',
-				'description'
-			);
+    public function deleteGeoZone($geo_zone_id) {
+        $this->db->query("DELETE FROM " . DB_PREFIX . "geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
+        $this->db->query("DELETE FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
 
-			if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-				$sql .= " ORDER BY " . $data['sort'];
-			} else {
-				$sql .= " ORDER BY name";
-			}
+        $this->cache->delete('geo_zone');
+    }
 
-			if (isset($data['order']) && ($data['order'] == 'DESC')) {
-				$sql .= " DESC";
-			} else {
-				$sql .= " ASC";
-			}
+    public function getGeoZone($geo_zone_id) {
+        $query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
 
-			if (isset($data['start']) || isset($data['limit'])) {
-				if ($data['start'] < 0) {
-					$data['start'] = 0;
-				}
+        return $query->row;
+    }
 
-				if ($data['limit'] < 1) {
-					$data['limit'] = 20;
-				}
+    public function getGeoZones($data = array()) {
+        if ($data) {
+            $sql = "SELECT * FROM " . DB_PREFIX . "geo_zone";
 
-				$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-			}
+            $sort_data = array(
+                'name',
+                'description'
+            );
 
-			$query = $this->db->query($sql);
+            if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+                $sql .= " ORDER BY " . $data['sort'];
+            } else {
+                $sql .= " ORDER BY name";
+            }
 
-			return $query->rows;
-		} else {
-			$geo_zone_data = $this->cache->get('geo_zone');
+            if (isset($data['order']) && ($data['order'] == 'DESC')) {
+                $sql .= " DESC";
+            } else {
+                $sql .= " ASC";
+            }
 
-			if (!$geo_zone_data) {
-				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "geo_zone ORDER BY name ASC");
+            if (isset($data['start']) || isset($data['limit'])) {
+                if ($data['start'] < 0) {
+                    $data['start'] = 0;
+                }
 
-				$geo_zone_data = $query->rows;
+                if ($data['limit'] < 1) {
+                    $data['limit'] = 20;
+                }
 
-				$this->cache->set('geo_zone', $geo_zone_data);
-			}
+                $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
+            }
 
-			return $geo_zone_data;
-		}
-	}
+            $query = $this->db->query($sql);
 
-	public function getTotalGeoZones() {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "geo_zone");
+            return $query->rows;
+        } else {
+            $geo_zone_data = $this->cache->get('geo_zone');
 
-		return $query->row['total'];
-	}
+            if (!$geo_zone_data) {
+                $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "geo_zone ORDER BY name ASC");
 
-	public function getZoneToGeoZones($geo_zone_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+                $geo_zone_data = $query->rows;
 
-		return $query->rows;
-	}
+                $this->cache->set('geo_zone', $geo_zone_data);
+            }
 
-	public function getTotalZoneToGeoZoneByGeoZoneId($geo_zone_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$geo_zone_id . "'");
+            return $geo_zone_data;
+        }
+    }
 
-		return $query->row['total'];
-	}
+    public function getTotalGeoZones() {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "geo_zone");
 
-	public function getTotalZoneToGeoZoneByCountryId($country_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE country_id = '" . (int)$country_id . "'");
+        return $query->row['total'];
+    }
 
-		return $query->row['total'];
-	}
+    public function getZoneToGeoZones($geo_zone_id) {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
 
-	public function getTotalZoneToGeoZoneByZoneId($zone_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE zone_id = '" . (int)$zone_id . "'");
+        return $query->rows;
+    }
 
-		return $query->row['total'];
-	}
+    public function getTotalZoneToGeoZoneByGeoZoneId($geo_zone_id) {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int) $geo_zone_id . "'");
+
+        return $query->row['total'];
+    }
+
+    public function getTotalZoneToGeoZoneByCountryId($country_id) {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE country_id = '" . (int) $country_id . "'");
+
+        return $query->row['total'];
+    }
+
+    public function getTotalZoneToGeoZoneByZoneId($zone_id) {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "zone_to_geo_zone WHERE zone_id = '" . (int) $zone_id . "'");
+
+        return $query->row['total'];
+    }
+
 }

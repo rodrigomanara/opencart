@@ -1,4 +1,5 @@
 <?php
+
 function token($length = 32) {
 	// Create random token
 	$string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

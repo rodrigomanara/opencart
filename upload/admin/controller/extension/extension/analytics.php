@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionExtensionAnalytics extends Controller {
+
+namespace Admin\Controller\Extension\Extesion;
+
+use System\Engine\AdminController as Controller;
+
+class Analytics extends Controller {
 	private $error = array();
 
 	public function index() {

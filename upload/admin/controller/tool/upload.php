@@ -1,7 +1,10 @@
 <?php
+
 class ControllerToolUpload extends Controller {
 	private $error = array();
-
+        /**
+         * 
+         */
 	public function index() {
 		$this->load->language('tool/upload');
 
@@ -11,8 +14,10 @@ class ControllerToolUpload extends Controller {
 
 		$this->getList();
 	}
-
-	public function delete() {
+        /**
+         * 
+         */
+    	public function delete() {
 		$this->load->language('tool/upload');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -60,7 +65,9 @@ class ControllerToolUpload extends Controller {
 
 		$this->getList();
 	}
-
+        /**
+         * 
+         */
 	protected function getList() {
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];

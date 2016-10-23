@@ -1,5 +1,11 @@
 <?php
-class ControllerStartupCompatibility extends Controller {
+
+namespace Admin\Controller\Startup;
+
+use System\Engine\AdminController;
+
+class Compatibility extends AdminController {
+    
 	public function index() {
 		if (isset($this->request->get['route'])) {
 			$extension = array(

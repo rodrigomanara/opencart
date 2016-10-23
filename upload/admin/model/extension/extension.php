@@ -1,6 +1,13 @@
 <?php
-class ModelExtensionExtension extends Model {
-	public function getInstalled($type) {
+
+
+namespace Admin\Model\Extension;
+
+use System\Engine\Model;
+
+class Extension extends Model {
+	
+    public function getInstalled($type) {
 		$extension_data = array();
 
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "extension WHERE `type` = '" . $this->db->escape($type) . "' ORDER BY code");

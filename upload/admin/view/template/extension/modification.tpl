@@ -76,10 +76,13 @@
                     <?php if ($modifications) { ?>
                     <?php foreach ($modifications as $modification) { ?>
                     <tr>
-                      <td class="text-center"><?php if (in_array($modification['modification_id'], $selected)) { ?>
+                      <td class="text-center">
+                        <?php if ($modification['modification_id']) { ?>
+                        <?php if (in_array($modification['modification_id'], $selected)) { ?>
                         <input type="checkbox" name="selected[]" value="<?php echo $modification['modification_id']; ?>" checked="checked" />
                         <?php } else { ?>
                         <input type="checkbox" name="selected[]" value="<?php echo $modification['modification_id']; ?>" />
+                        <?php } ?>
                         <?php } ?></td>
                       <td class="text-left"><?php echo $modification['name']; ?></td>
                       <td class="text-left"><?php echo $modification['author']; ?></td>
@@ -91,10 +94,14 @@
                         <?php } else { ?>
                         <button type="button" class="btn btn-info" disabled="disabled"><i class="fa fa-link"></i></button>
                         <?php } ?>
+                        <?php if ($modification['modification_id']) { ?>
                         <?php if (!$modification['enabled']) { ?>
                         <a href="<?php echo $modification['enable']; ?>" data-toggle="tooltip" title="<?php echo $button_enable; ?>" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
                         <?php } else { ?>
                         <a href="<?php echo $modification['disable']; ?>" data-toggle="tooltip" title="<?php echo $button_disable; ?>" class="btn btn-danger"><i class="fa fa-minus-circle"></i></a>
+                        <?php } ?>
+                        <?php } else { ?>
+                        <button type="button" class="btn btn-danger" disabled="disabled"><i class="fa fa-minus-circle"></i></button>
                         <?php } ?></td>
                     </tr>
                     <?php } ?>
@@ -114,9 +121,9 @@
           </div>
           <div class="tab-pane" id="tab-log">
             <p>
-              <textarea wrap="off" rows="15" class="form-control"><?php echo $log; ?></textarea>
+              <textarea wrap="off" rows="15" class="form-control"><?php echo $log ?></textarea>
             </p>
-            <div class="text-right"><a href="<?php echo $clear_log; ?>" class="btn btn-danger"><i class="fa fa-eraser"></i> <?php echo $button_clear; ?></a></div>
+            <div class="text-right"><a href="<?php echo $clear_log; ?>" class="btn btn-danger"><i class="fa fa-eraser"></i> <?php echo $button_clear ?></a></div>
           </div>
         </div>
       </div>

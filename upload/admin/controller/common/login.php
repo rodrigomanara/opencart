@@ -1,5 +1,10 @@
 <?php
-class ControllerCommonLogin extends Controller {
+
+namespace Admin\Controller\Common;
+
+use System\Engine\AdminController as Controller;
+
+class Login extends Controller {
 	private $error = array();
 
 	public function index() {

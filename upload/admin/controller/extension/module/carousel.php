@@ -1,5 +1,11 @@
 <?php
-class ControllerExtensionModuleCarousel extends Controller {
+
+namespace Admin\Controller\Extension\Module;
+
+use System\Engine\AdminController as Controller;
+
+
+class Carousel extends Controller {
 	private $error = array();
 
 	public function index() {

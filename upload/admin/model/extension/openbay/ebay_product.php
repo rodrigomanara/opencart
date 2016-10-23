@@ -1,5 +1,11 @@
 <?php
-class ModelExtensionOpenBayEbayProduct extends Model {
+
+
+namespace Admin\Model\Extension\OpenBay;
+
+use System\Engine\Model;
+
+class EbayProduct extends Model {
 	public function getTaxRate($class_id) {
 		return $this->openbay->getTaxRate($class_id);
 	}

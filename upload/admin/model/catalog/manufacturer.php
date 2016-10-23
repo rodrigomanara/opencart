@@ -1,123 +1,130 @@
 <?php
-class ModelCatalogManufacturer extends Model {
-	public function addManufacturer($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer SET name = '" . $this->db->escape($data['name']) . "', sort_order = '" . (int)$data['sort_order'] . "'");
 
-		$manufacturer_id = $this->db->getLastId();
+namespace Admin\Model\Catalog;
 
-		if (isset($data['image'])) {
-			$this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET image = '" . $this->db->escape($data['image']) . "' WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
-		}
+use System\Engine\Model;
 
-		if (isset($data['manufacturer_store'])) {
-			foreach ($data['manufacturer_store'] as $store_id) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_to_store SET manufacturer_id = '" . (int)$manufacturer_id . "', store_id = '" . (int)$store_id . "'");
-			}
-		}
+class Manufacturer extends Model {
 
-		if (isset($data['keyword'])) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'manufacturer_id=" . (int)$manufacturer_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
-		}
+    public function addManufacturer($data) {
+        $this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer SET name = '" . $this->db->escape($data['name']) . "', sort_order = '" . (int) $data['sort_order'] . "'");
 
-		$this->cache->delete('manufacturer');
+        $manufacturer_id = $this->db->getLastId();
 
-		return $manufacturer_id;
-	}
+        if (isset($data['image'])) {
+            $this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET image = '" . $this->db->escape($data['image']) . "' WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
+        }
 
-	public function editManufacturer($manufacturer_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET name = '" . $this->db->escape($data['name']) . "', sort_order = '" . (int)$data['sort_order'] . "' WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+        if (isset($data['manufacturer_store'])) {
+            foreach ($data['manufacturer_store'] as $store_id) {
+                $this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_to_store SET manufacturer_id = '" . (int) $manufacturer_id . "', store_id = '" . (int) $store_id . "'");
+            }
+        }
 
-		if (isset($data['image'])) {
-			$this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET image = '" . $this->db->escape($data['image']) . "' WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
-		}
+        if (isset($data['keyword'])) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'manufacturer_id=" . (int) $manufacturer_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+        }
 
-		$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+        $this->cache->delete('manufacturer');
 
-		if (isset($data['manufacturer_store'])) {
-			foreach ($data['manufacturer_store'] as $store_id) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_to_store SET manufacturer_id = '" . (int)$manufacturer_id . "', store_id = '" . (int)$store_id . "'");
-			}
-		}
+        return $manufacturer_id;
+    }
 
-		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int)$manufacturer_id . "'");
+    public function editManufacturer($manufacturer_id, $data) {
+        $this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET name = '" . $this->db->escape($data['name']) . "', sort_order = '" . (int) $data['sort_order'] . "' WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
 
-		if ($data['keyword']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'manufacturer_id=" . (int)$manufacturer_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
-		}
+        if (isset($data['image'])) {
+            $this->db->query("UPDATE " . DB_PREFIX . "manufacturer SET image = '" . $this->db->escape($data['image']) . "' WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
+        }
 
-		$this->cache->delete('manufacturer');
-	}
+        $this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
 
-	public function deleteManufacturer($manufacturer_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
-		$this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
-		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int)$manufacturer_id . "'");
+        if (isset($data['manufacturer_store'])) {
+            foreach ($data['manufacturer_store'] as $store_id) {
+                $this->db->query("INSERT INTO " . DB_PREFIX . "manufacturer_to_store SET manufacturer_id = '" . (int) $manufacturer_id . "', store_id = '" . (int) $store_id . "'");
+            }
+        }
 
-		$this->cache->delete('manufacturer');
-	}
+        $this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int) $manufacturer_id . "'");
 
-	public function getManufacturer($manufacturer_id) {
-		$query = $this->db->query("SELECT DISTINCT *, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int)$manufacturer_id . "') AS keyword FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+        if ($data['keyword']) {
+            $this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'manufacturer_id=" . (int) $manufacturer_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+        }
 
-		return $query->row;
-	}
+        $this->cache->delete('manufacturer');
+    }
 
-	public function getManufacturers($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "manufacturer";
+    public function deleteManufacturer($manufacturer_id) {
+        $this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
+        $this->db->query("DELETE FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
+        $this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int) $manufacturer_id . "'");
 
-		if (!empty($data['filter_name'])) {
-			$sql .= " WHERE name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
-		}
+        $this->cache->delete('manufacturer');
+    }
 
-		$sort_data = array(
-			'name',
-			'sort_order'
-		);
+    public function getManufacturer($manufacturer_id) {
+        $query = $this->db->query("SELECT DISTINCT *, (SELECT keyword FROM " . DB_PREFIX . "url_alias WHERE query = 'manufacturer_id=" . (int) $manufacturer_id . "') AS keyword FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
 
-		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];
-		} else {
-			$sql .= " ORDER BY name";
-		}
+        return $query->row;
+    }
 
-		if (isset($data['order']) && ($data['order'] == 'DESC')) {
-			$sql .= " DESC";
-		} else {
-			$sql .= " ASC";
-		}
+    public function getManufacturers($data = array()) {
+        $sql = "SELECT * FROM " . DB_PREFIX . "manufacturer";
 
-		if (isset($data['start']) || isset($data['limit'])) {
-			if ($data['start'] < 0) {
-				$data['start'] = 0;
-			}
+        if (!empty($data['filter_name'])) {
+            $sql .= " WHERE name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
+        }
 
-			if ($data['limit'] < 1) {
-				$data['limit'] = 20;
-			}
+        $sort_data = array(
+            'name',
+            'sort_order'
+        );
 
-			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-		}
+        if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
+            $sql .= " ORDER BY " . $data['sort'];
+        } else {
+            $sql .= " ORDER BY name";
+        }
 
-		$query = $this->db->query($sql);
+        if (isset($data['order']) && ($data['order'] == 'DESC')) {
+            $sql .= " DESC";
+        } else {
+            $sql .= " ASC";
+        }
 
-		return $query->rows;
-	}
+        if (isset($data['start']) || isset($data['limit'])) {
+            if ($data['start'] < 0) {
+                $data['start'] = 0;
+            }
 
-	public function getManufacturerStores($manufacturer_id) {
-		$manufacturer_store_data = array();
+            if ($data['limit'] < 1) {
+                $data['limit'] = 20;
+            }
 
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
+            $sql .= " LIMIT " . (int) $data['start'] . "," . (int) $data['limit'];
+        }
 
-		foreach ($query->rows as $result) {
-			$manufacturer_store_data[] = $result['store_id'];
-		}
+        $query = $this->db->query($sql);
 
-		return $manufacturer_store_data;
-	}
+        return $query->rows;
+    }
 
-	public function getTotalManufacturers() {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "manufacturer");
+    public function getManufacturerStores($manufacturer_id) {
+        $manufacturer_store_data = array();
 
-		return $query->row['total'];
-	}
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "manufacturer_to_store WHERE manufacturer_id = '" . (int) $manufacturer_id . "'");
+
+        foreach ($query->rows as $result) {
+            $manufacturer_store_data[] = $result['store_id'];
+        }
+
+        return $manufacturer_store_data;
+    }
+
+    public function getTotalManufacturers() {
+        $query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "manufacturer");
+
+        return $query->row['total'];
+    }
+
 }

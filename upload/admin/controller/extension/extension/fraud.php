@@ -1,5 +1,9 @@
 <?php
-class ControllerExtensionExtensionFraud extends Controller {
+namespace Admin\Controller\Extension\Extesion;
+
+use System\Engine\AdminController as Controller;
+
+class Fraud extends Controller {
 	private $error = array();
 
 	public function index() {

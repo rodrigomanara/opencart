@@ -1,5 +1,11 @@
 <?php
-class ControllerExtensionModuleFeatured extends Controller {
+
+namespace Admin\Controller\Extension\Module;
+
+use System\Engine\AdminController as Controller;
+
+
+class Featured extends Controller {
 	private $error = array();
 
 	public function index() {

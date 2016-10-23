@@ -1,5 +1,10 @@
 <?php
-class ModelLocalisationOrderStatus extends Model {
+
+namespace Admin\Model\Localisation;
+
+use System\Engine\Model;
+
+class OrderStatus extends Model {
 	public function addOrderStatus($data) {
 		foreach ($data['order_status'] as $language_id => $value) {
 			if (isset($order_status_id)) {

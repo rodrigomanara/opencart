@@ -1,25 +1,33 @@
 <?php
-class ControllerStartupSass extends Controller {
-	public function index() {
-		$file = DIR_APPLICATION . 'view/stylesheet/bootstrap.css';
 
-		if (!is_file($file)) {
-			$scss = new Scssc();
-			$scss->setImportPaths(DIR_APPLICATION . 'view/stylesheet/sass/');
+namespace Admin\Controller\Startup;
 
-			$output = $scss->compile('@import "_bootstrap.scss"');
+use System\Engine\AdminController as Controller;
 
-			$handle = fopen($file, 'w');
 
-			flock($handle, LOCK_EX);
+class Sass extends Controller {
 
-			fwrite($handle, $output);
+    public function index() {
+        $file = DIR_APPLICATION . 'view/stylesheet/bootstrap.css';
 
-			fflush($handle);
+        if (!is_file($file)) {
+            $scss = new Scssc();
+            $scss->setImportPaths(DIR_APPLICATION . 'view/stylesheet/sass/');
 
-			flock($handle, LOCK_UN);
+            $output = $scss->compile('@import "_bootstrap.scss"');
 
-			fclose($handle);
-		}
-	}
+            $handle = fopen($file, 'w');
+
+            flock($handle, LOCK_EX);
+
+            fwrite($handle, $output);
+
+            fflush($handle);
+
+            flock($handle, LOCK_UN);
+
+            fclose($handle);
+        }
+    }
+
 }

@@ -1,4 +1,7 @@
 <?php
+
+namespace System\Library;
+
 final class Encryption {
 	private $key;
 

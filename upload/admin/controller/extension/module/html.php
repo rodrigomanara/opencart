@@ -1,5 +1,10 @@
 <?php
-class ControllerExtensionModuleHTML extends Controller {
+namespace Admin\Controller\Extension\Module;
+
+use System\Engine\AdminController as Controller;
+
+
+class Html extends Controller {
 	private $error = array();
 
 	public function index() {

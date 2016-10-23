@@ -1,88 +1,94 @@
 <?php
+
+namespace Admin\Model\Extension\Payment;
+
+use System\Engine\Model;
 use Cardinity\Client;
 use Cardinity\Method\Payment;
 use Cardinity\Method\Refund;
+use System\Engine\Model;
 
-class ModelExtensionPaymentCardinity extends Model {
-	public function getOrder($order_id) {
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "cardinity_order` WHERE `order_id` = '" . (int)$order_id . "' LIMIT 1");
+class Cardinity extends Model {
 
-		return $query->row;
-	}
+    public function getOrder($order_id) {
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "cardinity_order` WHERE `order_id` = '" . (int) $order_id . "' LIMIT 1");
 
-	public function createClient($credentials) {
-		return Client::create(array(
-			'consumerKey'    => $credentials['key'],
-			'consumerSecret' => $credentials['secret'],
-		));
-	}
+        return $query->row;
+    }
 
-	public function verifyCredentials($client) {
-		$method = new Payment\GetAll(10);
+    public function createClient($credentials) {
+        return Client::create(array(
+                    'consumerKey' => $credentials['key'],
+                    'consumerSecret' => $credentials['secret'],
+        ));
+    }
 
-		try {
-			$client->call($method);
+    public function verifyCredentials($client) {
+        $method = new Payment\GetAll(10);
 
-			return true;
-		} catch (Exception $e) {
-			$this->log($e->getMessage());
+        try {
+            $client->call($method);
 
-			return false;
-		}
-	}
+            return true;
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
 
-	public function getPayment($client, $payment_id) {
-		$method = new Payment\Get($payment_id);
+            return false;
+        }
+    }
 
-		try {
-			$payment = $client->call($method);
+    public function getPayment($client, $payment_id) {
+        $method = new Payment\Get($payment_id);
 
-			return $payment;
-		} catch (Exception $e) {
-			$this->log($e->getMessage());
+        try {
+            $payment = $client->call($method);
 
-			return false;
-		}
-	}
+            return $payment;
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
 
-	public function getRefunds($client, $payment_id) {
-		$method = new Refund\GetAll($payment_id);
+            return false;
+        }
+    }
 
-		try {
-			$refunds = $client->call($method);
+    public function getRefunds($client, $payment_id) {
+        $method = new Refund\GetAll($payment_id);
 
-			return $refunds;
-		} catch (Exception $e) {
-			$this->log($e->getMessage());
+        try {
+            $refunds = $client->call($method);
 
-			return false;
-		}
-	}
+            return $refunds;
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
 
-	public function refundPayment($client, $payment_id, $amount, $description) {
-		$method = new Refund\Create($payment_id, $amount, $description);
+            return false;
+        }
+    }
 
-		try {
-			$refund = $client->call($method);
+    public function refundPayment($client, $payment_id, $amount, $description) {
+        $method = new Refund\Create($payment_id, $amount, $description);
 
-			return $refund;
-		} catch (Exception $e) {
-			$this->log($e->getMessage());
+        try {
+            $refund = $client->call($method);
 
-			return false;
-		}
-	}
+            return $refund;
+        } catch (Exception $e) {
+            $this->log($e->getMessage());
 
-	public function log($data) {
-		if ($this->config->get('cardinity_debug')) {
-			$backtrace = debug_backtrace();
-			$log = new Log('cardinity.log');
-			$log->write('(' . $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . ') - ' . print_r($data, true));
-		}
-	}
+            return false;
+        }
+    }
 
-	public function install() {
-		$this->db->query("
+    public function log($data) {
+        if ($this->config->get('cardinity_debug')) {
+            $backtrace = debug_backtrace();
+            $log = new Log('cardinity.log');
+            $log->write('(' . $backtrace[1]['class'] . '::' . $backtrace[1]['function'] . ') - ' . print_r($data, true));
+        }
+    }
+
+    public function install() {
+        $this->db->query("
 			CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "cardinity_order` (
 			  `cardinity_order_id` INT(11) NOT NULL AUTO_INCREMENT,
 			  `order_id` INT(11) NOT NULL,
@@ -90,9 +96,10 @@ class ModelExtensionPaymentCardinity extends Model {
 			  PRIMARY KEY (`cardinity_order_id`)
 			) ENGINE=MyISAM DEFAULT COLLATE=utf8_general_ci;
 		");
-	}
+    }
 
-	public function uninstall() {
-		$this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "cardinity_order`;");
-	}
+    public function uninstall() {
+        $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "cardinity_order`;");
+    }
+
 }

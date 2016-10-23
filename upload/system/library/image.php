@@ -1,4 +1,8 @@
 <?php
+
+
+namespace System\Library;
+
 class Image {
 	private $file;
 	private $image;

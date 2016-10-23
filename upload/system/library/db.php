@@ -1,4 +1,8 @@
 <?php
+
+
+namespace System\Library;
+
 class DB {
 	private $adaptor;
 
